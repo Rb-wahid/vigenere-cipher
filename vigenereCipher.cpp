@@ -15,8 +15,7 @@ string toUpperCase (string str) {
 string convetedToOriginalCase (string originalCase, string upperCase) {
   string orig_text;
 
-  for (int i = 0; i < originalCase.size (); i++)
-    {
+  for (int i = 0; i < originalCase.size (); i++){
       char x = upperCase[i];
       if (originalCase[i] >= 'a' && originalCase[i] <= 'z'){
         x = tolower (x);
@@ -108,7 +107,7 @@ int main() {
     cout << "\nEnter key (less than message's length) ->";
     cin >> keyword;
     if (isValidKey (str, keyword)){
-	    //keyword is repeated in a circular manner until it matches the length of the plain text.
+	    //keyword is repeated in a circular manner until it matches the length of the message
 	   key = generateKey (str, keyword);
 	   break;
 	  }
