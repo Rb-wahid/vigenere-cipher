@@ -7,25 +7,23 @@
 
 using namespace std;
 
-string toUpperCase(string str) {
-  transform(str.begin(), str.end(), str.begin(), ::toupper);
+string toUpperCase (string str) {
+  transform (str.begin (), str.end (), str.begin (),::toupper);
   return str;
 }
 
-string
-convetedToOriginalCase(string originalCase, string upperCase) {
+string convetedToOriginalCase (string originalCase, string upperCase) {
   string orig_text;
 
-  for (int i = 0; i < originalCase.size(); i++) {
-    char x = upperCase[i];
-    if (originalCase[i] >= 'a' && originalCase[i] <= 'z') {
+  for (int i = 0; i < originalCase.size (); i++)
+    {
+      char x = upperCase[i];
+      if (originalCase[i] >= 'a' && originalCase[i] <= 'z'){
+        x = tolower (x);
+	    }
 
-      x = tolower(x);
+      orig_text.push_back (x);
     }
-
-    orig_text.push_back(x);
-
-  }
   return orig_text;
 }
 
@@ -33,160 +31,97 @@ convetedToOriginalCase(string originalCase, string upperCase) {
 // a cyclic manner until it's length isi'nt
 // equal to the length of original text
 
-string
-generateKey(string str, string key) {
+string generateKey (string str, string key) {
   key = toUpperCase(key);
-  int x = str.size();
+  int x = str.size ();
 
-  for (int i = 0;; i++) {
-    if (x == i)
-      i = 0;
-    if (key.size() == str.size())
-      break;
-    key.push_back(key[i]);
-  }
+  for (int i = 0;; i++){
+      if (x == i)
+	      i = 0;
+      if (key.size () == str.size ())
+      	break;
+      key.push_back(key[i]);
+    }
   return key;
 }
 
 // This function returns the encrypted text
 // generated with the help of the key
-string
-cipherText(string str, string key) {
-  string upperStr = toUpperCase(str);
+string cipherText (string str, string key) {
+  string upperStr = toUpperCase (str);
   string cipher_text;
 
-  for (int i = 0; i < upperStr.size(); i++) {
-    if (!isalpha(upperStr[i])) {
-      cipher_text.push_back(upperStr[i]);
-    } else {
-
-      // converting in range 0-25
-      char x = (upperStr[i] + key[i]) % 26;
-
-      // convert into alphabets(ASCII)
-
-      x += 'A';
-
-      cipher_text.push_back(x);
+  for (int i = 0; i < upperStr.size (); i++){
+      char x = upperStr[i];
+      // if value is alphabet then converting
+      if (isalpha (x)){
+	      // converting in range 0-25
+	       x = (upperStr[i] + key[i]) % 26;
+	      // convert into alphabets(ASCII)
+	      x += 'A';
+	    }
+    
+      cipher_text.push_back (x);
     }
-  }
-  return convetedToOriginalCase(str, cipher_text);
+  // converted cipher_text to original case. str is the original case
+  cipher_text = convetedToOriginalCase (str, cipher_text);
+
+  return cipher_text;
 }
 
 // This function decrypts the encrypted text
 // and returns the original text
-string
-originalText(string cipher_text, string key) {
+string originalText (string cipher_text, string key){
   string orig_text;
-  string upperStr = toUpperCase(cipher_text);
-  for (int i = 0; i < upperStr.size(); i++) {
-    if (!isalpha(upperStr[i])) {
-
-      orig_text.push_back(upperStr[i]);
-    } else {
-      // converting in range 0-25
-      char x = (upperStr[i] - key[i] + 26) % 26;
-
-      // convert into alphabets(ASCII)
-
-      x += 'A';
-
-      orig_text.push_back(x);
+  string upperStr = toUpperCase (cipher_text);
+  for (int i = 0; i < upperStr.size (); i++){
+      char x = upperStr[i];
+      if (isalpha (x)){
+	      // converting in range 0-25
+	      x = (upperStr[i] - key[i] + 26) % 26;
+	      // convert into alphabets(ASCII)
+	      x += 'A';
+	     }
+     orig_text.push_back (x);
     }
-  }
-  return convetedToOriginalCase(cipher_text, orig_text);
+  // converted orig_text to original case. cipher_text is the original case
+  orig_text = convetedToOriginalCase (cipher_text, orig_text);
+  return orig_text;
 }
 
-bool isValidKey(string str, string key) {
-  return str.size() >= key.size();
+bool isValidKey (string str, string key){
+  return str.size () >= key.size ();
 }
 
-void
-intro() {
-  cout <<
-    "===================================================================" <<
-    "\n";
-  cout <<
-    "    Welcom to Vigenere Cipher encrypting alphabetic text System    " <<
-    "\n";
-  cout <<
-    "===================================================================" <<
-    "\n";
-  cout <<
-    "                                                                   " <<
-    "\n";
-
-}
-
-void design() {
-  cout <<
-    "\n===================================================================" <<
-    "\n";
-}
 
 // Driver program to test the above function
-int
-main() {
-  intro();
+int main() {
   string str;
   string keyword;
   string key;
-  int option;
-  bool isContinue = true;
 
-  while (isContinue) {
-    cout << "\nEnter 1 for Encryption OR 2 for Decryption or 0 for exit : ";
-    cin >> option;
-    if (option == 0) {
-      cout << option;
-      isContinue = false;
-      break;
-    }
-    cin.ignore(256, '\n');
-    cout << "\nEnter message or type exit : ";
-    getline(cin, str);
+  cout << "\nEnter message ->";
+  getline (cin, str);		// input message
 
-    if (str == "exit") {
-      isContinue = false;
-      break;
+// while loop for sure , input is valid
+  while (true){
+    cout << "\nEnter key (less than message's length) ->";
+    cin >> keyword;
+    if (isValidKey (str, keyword)){
+	    //keyword is repeated in a circular manner until it matches the length of the plain text.
+	   key = generateKey (str, keyword);
+	   break;
+	  }
+      cout << "\nWARNING : Invalid key\n";
     }
 
-    cout << "\nEnter key (less than message's length) : ";
-    while (true) {
-      cin >> keyword;
-      if (isValidKey(str, keyword)) {
-        key = generateKey(str, keyword);
-        break;
-      }
-      cout << "\nWARNING : Invalid key";
-    }
+  //  cin.ignore(256, '\n');
 
-    cin.ignore(256, '\n');
+  string encryptedStr = cipherText (str, key);
+  cout << "\nYour Encrypted message ->" << encryptedStr << "\n";
 
-    switch (option) {
-    case 0: {
-      isContinue = false;
-      break;
-    }
-    case 1: {
-      design();
-      string encryptedStr = cipherText(str, key);
-      cout << "\nYour Encrypted message -:" << encryptedStr << "\n";
-      design();
-      break;
-    }
-    case 2: {
-      string decryptedStr = originalText(str, key);
-      design();
-      cout << "\nYour Decrypted message -:" << decryptedStr << "\n";
-      design();
-      break;
-    }
-    default: {
-      cout << "\nWARNING : Invalid input";
-    }
-    }
-  }
+  string decryptedStr = originalText (encryptedStr, key);
+  cout << "\nYour Decrypted message ->" << decryptedStr << "\n";
 
   return 0;
 }
